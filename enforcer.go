@@ -297,9 +297,9 @@ func (e *Enforcer) BuildRoleLinks() {
 }
 
 // Enforce decides whether a "subject" can access a "object" with the operation "action", input parameters are usually: (sub, obj, act).
-func (e *Enforcer) Enforce(rvals ...interface{}) bool {
+func (e *Enforcer) Enforce(rvals ...interface{}) (map[string]string, bool) {
 	if !e.enabled {
-		return true
+		return nil, true
 	}
 
 	functions := make(map[string]govaluate.ExpressionFunction)
@@ -337,6 +337,7 @@ func (e *Enforcer) Enforce(rvals ...interface{}) bool {
 
 	var policyEffects []effect.Effect
 	var matcherResults []float64
+	var resultMap = make(map[string]string)
 	if policyLen := len(e.model["p"]["p"].Policy); policyLen != 0 {
 		policyEffects = make([]effect.Effect, policyLen)
 		matcherResults = make([]float64, policyLen)
@@ -395,8 +396,10 @@ func (e *Enforcer) Enforce(rvals ...interface{}) bool {
 				} else {
 					policyEffects[i] = effect.Indeterminate
 				}
+				resultMap[pvals[i]] = eft
 			} else {
 				policyEffects[i] = effect.Allow
+				resultMap[pvals[i]] = "allow"
 			}
 
 			if e.model["e"]["e"].Value == "priority(p_eft) || deny" {
@@ -446,7 +449,7 @@ func (e *Enforcer) Enforce(rvals ...interface{}) bool {
 		log.LogPrint(reqStr)
 	}
 
-	return result
+	return resultMap, result
 }
 
 // assumes bounds have already been checked
