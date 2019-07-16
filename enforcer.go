@@ -17,16 +17,16 @@ package casbin
 import (
 	"errors"
 	"fmt"
-
 	"github.com/Knetic/govaluate"
 	"github.com/casbin/casbin/effect"
 	"github.com/casbin/casbin/log"
 	"github.com/casbin/casbin/model"
 	"github.com/casbin/casbin/persist"
-	fileadapter "github.com/casbin/casbin/persist/file-adapter"
+	"github.com/casbin/casbin/persist/file-adapter"
 	"github.com/casbin/casbin/rbac"
-	defaultrolemanager "github.com/casbin/casbin/rbac/default-role-manager"
+	"github.com/casbin/casbin/rbac/default-role-manager"
 	"github.com/casbin/casbin/util"
+	"strings"
 )
 
 // Enforcer is the main interface for authorization enforcement and policy management.
@@ -363,6 +363,10 @@ func (e *Enforcer) Enforce(rvals ...interface{}) (map[string]string, bool) {
 			parameters.pVals = pvals
 
 			result, err := expression.Eval(parameters)
+			resStr := fmt.Sprintf("%v", result)
+			if resStr == "false" {
+				resultMap[strings.Join(pvals[:], " ")] = resStr
+			}
 			// log.LogPrint("Result: ", result)
 
 			if err != nil {
@@ -396,10 +400,8 @@ func (e *Enforcer) Enforce(rvals ...interface{}) (map[string]string, bool) {
 				} else {
 					policyEffects[i] = effect.Indeterminate
 				}
-				resultMap[pvals[i]] = eft
 			} else {
 				policyEffects[i] = effect.Allow
-				resultMap[pvals[i]] = "allow"
 			}
 
 			if e.model["e"]["e"].Value == "priority(p_eft) || deny" {
@@ -449,7 +451,12 @@ func (e *Enforcer) Enforce(rvals ...interface{}) (map[string]string, bool) {
 		log.LogPrint(reqStr)
 	}
 
-	return resultMap, result
+	//finally if the overall result from mergeEffects is true, we ignore the errorLog
+	if !result {
+		return resultMap, result
+	} else {
+		return nil, result
+	}
 }
 
 // assumes bounds have already been checked
