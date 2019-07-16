@@ -45,7 +45,8 @@ func (e *CachedEnforcer) EnableCache(enableCache bool) {
 // if rvals is not string , ingore the cache
 func (e *CachedEnforcer) Enforce(rvals ...interface{}) bool {
 	if !e.enableCache {
-		return e.Enforcer.Enforce(rvals...)
+		_, enforce := e.Enforcer.Enforce(rvals...)
+		return enforce
 	}
 
 	key := ""
@@ -53,14 +54,15 @@ func (e *CachedEnforcer) Enforce(rvals ...interface{}) bool {
 		if val, ok := rval.(string); ok {
 			key += val + "$$"
 		} else {
-			return e.Enforcer.Enforce(rvals...)
+			_, enforce := e.Enforcer.Enforce(rvals...)
+			return enforce
 		}
 	}
 
 	if res, ok := e.getCachedResult(key); ok {
 		return res
 	} else {
-		res := e.Enforcer.Enforce(rvals...)
+		_, res := e.Enforcer.Enforce(rvals...)
 		e.setCachedResult(key, res)
 		return res
 	}

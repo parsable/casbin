@@ -103,7 +103,8 @@ func (e *SyncedEnforcer) BuildRoleLinks() {
 func (e *SyncedEnforcer) Enforce(rvals ...interface{}) bool {
 	e.m.RLock()
 	defer e.m.RUnlock()
-	return e.Enforcer.Enforce(rvals...)
+	_, enforce := e.Enforcer.Enforce(rvals...)
+	return enforce
 }
 
 // GetAllSubjects gets the list of subjects that show up in the current policy.

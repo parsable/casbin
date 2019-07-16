@@ -54,7 +54,7 @@ func (e *Enforcer) EnforceSafe(rvals ...interface{}) (result bool, err error) {
 		}
 	}()
 
-	result = e.Enforce(rvals...)
+	_, result = e.Enforce(rvals...)
 	err = nil
 	return
 }

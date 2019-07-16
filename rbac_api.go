@@ -196,7 +196,8 @@ func (e *Enforcer) GetImplicitUsersForPermission(permission ...string) []string 
 	res := []string{}
 	for _, user := range users {
 		req := util.JoinSliceAny(user, permission...)
-		if e.Enforce(req...) {
+		_, enforce := e.Enforce(req...)
+		if enforce {
 			res = append(res, user)
 		}
 	}
