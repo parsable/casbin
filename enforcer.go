@@ -364,9 +364,7 @@ func (e *Enforcer) Enforce(rvals ...interface{}) (map[string]string, bool) {
 
 			result, err := expression.Eval(parameters)
 			resStr := fmt.Sprintf("%v", result)
-			if resStr == "false" {
-				resultMap[strings.Join(pvals[:], " ")] = resStr
-			}
+			resultMap[strings.Join(pvals[:], " ")] = resStr
 			// log.LogPrint("Result: ", result)
 
 			if err != nil {
@@ -451,12 +449,8 @@ func (e *Enforcer) Enforce(rvals ...interface{}) (map[string]string, bool) {
 		log.LogPrint(reqStr)
 	}
 
-	//finally if the overall result from mergeEffects is true, we ignore the errorLog
-	if !result {
-		return resultMap, result
-	} else {
-		return nil, result
-	}
+	return resultMap, result
+
 }
 
 // assumes bounds have already been checked
