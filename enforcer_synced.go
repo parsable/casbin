@@ -19,7 +19,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/casbin/casbin/persist"
+	"github.com/parsable/casbin/persist"
 )
 
 // SyncedEnforcer wraps Enforcer and provides synchronized access

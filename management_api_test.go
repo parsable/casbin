@@ -17,7 +17,7 @@ package casbin
 import (
 	"testing"
 
-	"github.com/casbin/casbin/util"
+	"github.com/parsable/casbin/util"
 )
 
 func testStringList(t *testing.T, title string, f func() []string, res []string) {

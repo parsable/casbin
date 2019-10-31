@@ -14,7 +14,7 @@
 
 package casbin
 
-import "github.com/casbin/casbin/util"
+import "github.com/parsable/casbin/util"
 
 // GetRolesForUser gets the roles that a user has.
 func (e *Enforcer) GetRolesForUser(name string) ([]string, error) {
