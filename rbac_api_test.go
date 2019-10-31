@@ -17,8 +17,8 @@ package casbin
 import (
 	"testing"
 
-	"github.com/casbin/casbin/v2/errors"
-	"github.com/casbin/casbin/v2/util"
+	"github.com/parsable/casbin/errors"
+	"github.com/parsable/casbin/util"
 )
 
 func testGetRoles(t *testing.T, e *Enforcer, name string, res []string) {

@@ -19,7 +19,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/casbin/casbin/v2/rbac"
+	"github.com/parsable/casbin/rbac"
 )
 
 // KeyMatch determines whether key1 matches the pattern of key2 (similar to RESTful path), key2 can contain a *.

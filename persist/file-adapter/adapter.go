@@ -21,9 +21,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/casbin/casbin/v2/model"
-	"github.com/casbin/casbin/v2/persist"
-	"github.com/casbin/casbin/v2/util"
+	"github.com/parsable/casbin/model"
+	"github.com/parsable/casbin/persist"
+	"github.com/parsable/casbin/util"
 )
 
 // Adapter is the file adapter for Casbin.

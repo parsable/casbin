@@ -17,7 +17,7 @@ package casbin
 import (
 	"testing"
 
-	"github.com/casbin/casbin/v2/persist/file-adapter"
+	"github.com/parsable/casbin/persist/file-adapter"
 )
 
 func TestInitFilteredAdapter(t *testing.T) {
