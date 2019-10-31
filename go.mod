@@ -1,4 +1,4 @@
-module github.com/parsable/casbin/v0
+module github.com/parsable/casbin
 
 go 1.13
 
