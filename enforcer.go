@@ -317,6 +317,8 @@ func (e *Enforcer) Enforce(rvals ...interface{}) (map[string]string, bool) {
 
 	expString := e.model["m"]["m"].Value
 	expression, err := govaluate.NewEvaluableExpressionWithFunctions(expString, functions)
+
+	log.LogPrint("expression: ", expression)
 	if err != nil {
 		panic(err)
 	}
@@ -352,7 +354,8 @@ func (e *Enforcer) Enforce(rvals ...interface{}) (map[string]string, bool) {
 					rvals))
 		}
 		for i, pvals := range e.model["p"]["p"].Policy {
-			// log.LogPrint("Policy Rule: ", pvals)
+			log.LogPrint("Policy Rule: ", pvals)
+
 			if len(e.model["p"]["p"].Tokens) != len(pvals) {
 				panic(
 					fmt.Sprintf(
@@ -364,10 +367,13 @@ func (e *Enforcer) Enforce(rvals ...interface{}) (map[string]string, bool) {
 
 			parameters.pVals = pvals
 
+			log.LogPrint("parameters: ", parameters)
+
 			result, err := expression.Eval(parameters)
 			resStr := fmt.Sprintf("%v", result)
 			resultMap[strings.Join(pvals[:], " ")] = resStr
-			// log.LogPrint("Result: ", result)
+
+			log.LogPrint("ResultEval parameters: ", result)
 
 			if err != nil {
 				policyEffects[i] = effect.Indeterminate
