@@ -7,7 +7,7 @@ permissions:
 on:
   push:
     branches:
-      - EI-396
+      - master
 
 jobs:
   go-build-publish:
