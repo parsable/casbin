@@ -17,6 +17,7 @@ package casbin
 import (
 	"log"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/parsable/casbin/persist"
@@ -25,26 +26,28 @@ import (
 // SyncedEnforcer wraps Enforcer and provides synchronized access
 type SyncedEnforcer struct {
 	*Enforcer
-	m        sync.RWMutex
-	autoLoad bool
+	m sync.RWMutex
+	// autoLoad is accessed from both the auto-load goroutine and its
+	// caller, so it is read and written atomically. 1 means enabled.
+	autoLoad int32
 }
 
 // NewSyncedEnforcer creates a synchronized enforcer via file or DB.
 func NewSyncedEnforcer(params ...interface{}) *SyncedEnforcer {
 	e := &SyncedEnforcer{}
 	e.Enforcer = NewEnforcer(params...)
-	e.autoLoad = false
+	atomic.StoreInt32(&e.autoLoad, 0)
 	return e
 }
 
 // StartAutoLoadPolicy starts a go routine that will every specified duration call LoadPolicy
 func (e *SyncedEnforcer) StartAutoLoadPolicy(d time.Duration) {
-	e.autoLoad = true
+	atomic.StoreInt32(&e.autoLoad, 1)
 	go func() {
 		n := 1
 		log.Print("Start automatically load policy")
 		for {
-			if !e.autoLoad {
+			if atomic.LoadInt32(&e.autoLoad) == 0 {
 				log.Print("Stop automatically load policy")
 				break
 			}
@@ -61,7 +64,7 @@ func (e *SyncedEnforcer) StartAutoLoadPolicy(d time.Duration) {
 
 // StopAutoLoadPolicy causes the go routine to exit.
 func (e *SyncedEnforcer) StopAutoLoadPolicy() {
-	e.autoLoad = false
+	atomic.StoreInt32(&e.autoLoad, 0)
 }
 
 // SetWatcher sets the current watcher.

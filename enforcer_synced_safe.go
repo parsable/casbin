@@ -14,6 +14,8 @@
 
 package casbin
 
+import "sync/atomic"
+
 // NewSyncedEnforcerSafe creates a synchronized enforcer via file or DB.
 func NewSyncedEnforcerSafe(params ...interface{}) (enforcer *SyncedEnforcer, err error) {
 	e := &SyncedEnforcer{}
@@ -23,7 +25,7 @@ func NewSyncedEnforcerSafe(params ...interface{}) (enforcer *SyncedEnforcer, err
 		return nil, err
 	}
 
-	e.autoLoad = false
+	atomic.StoreInt32(&e.autoLoad, 0)
 	return e, nil
 }
 
