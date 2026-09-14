@@ -43,11 +43,6 @@ jobs:
         git tag -a -m "${truncated_version}" ${truncated_version}
         git push --tags
         echo "new_tag=${truncated_version}" >> $GITHUB_OUTPUT
-    - name: Checkout common-actions repo
-      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      with:
-        repository: parsable/common-actions
-        path: ./common-actions
     - name: Create release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
